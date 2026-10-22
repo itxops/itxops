@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /404
 
+# Sitemaps
 Sitemap: https://itxops.com/sitemap.xml
+Host: https://itxops.com
