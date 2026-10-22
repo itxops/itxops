@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page Not Found (404) — ITXOPS</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1C253B">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .notfound {
+    min-height: 65vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-block: 64px;
+  }
+  .notfound__code {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: var(--blue);
+    text-transform: uppercase;
+  }
+  .notfound__title { margin-top: 14px; font-size: clamp(1.8rem, 3.4vw, 2.6rem); color: var(--navy); }
+  .notfound__text { margin-top: 16px; max-width: 48ch; color: var(--ink-muted); font-size: 1.05rem; }
+  .notfound__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; justify-content: center; }
+  .notfound__links {
+    margin-top: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    font-size: .95rem;
+    color: var(--ink-muted);
+  }
+  .notfound__links a {
+    color: var(--blue);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
+</head>
+<body id="top">
+
+<div class="remote-notice-strip">
+  <span class="remote-notice-strip__dot" aria-hidden="true"></span>
+  <span><strong>100% Remote Operations:</strong> Need technical help? Email our engineering desk directly at <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+</div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a class="header__logo" href="index.html" aria-label="ITXOPS — home">
+      <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="155" height="55" fetchpriority="high" decoding="async">
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="services.html">Services</a></li>
+        <li><a class="nav__link" href="technologies.html">Technologies</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="remote-badge" title="Operating 100% Remotely Worldwide">
+          <span class="remote-badge__dot" aria-hidden="true"></span>Location: Remote
+        </span>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">Get Started</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="container notfound" id="main">
+  <p class="notfound__code">Error 404 &bull; Resource Not Found</p>
+  <h1 class="notfound__title">This page could not be found.</h1>
+  <p class="notfound__text">
+    The page you are looking for may have been moved, renamed, or is temporarily unavailable.
+  </p>
+  <div class="notfound__actions">
+    <a class="btn btn--primary" href="index.html">Back to Home</a>
+    <a class="btn btn--ghost" href="services.html">Explore Services</a>
+    <a class="btn btn--ghost" href="contact.html">Contact Support</a>
+  </div>
+
+  <div class="notfound__links">
+    <span>Quick Navigation:</span>
+    <a href="services.html">Services</a> &bull;
+    <a href="technologies.html">Technologies</a> &bull;
+    <a href="about.html">About</a> &bull;
+    <a href="contact.html">Contact Us</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <img class="footer__logo" src="assets/img/itxops-wordmark-light.png" alt="ITXOPS" width="150" height="53" loading="lazy" decoding="async">
+      <p class="footer__tagline">IT &times; Operations</p>
+      <p class="footer__blurb">
+        Practical IT infrastructure, deployment, automation, and technical
+        support services for growing businesses.
+      </p>
+      <p class="footer__location">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:16px;height:16px;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        Location: Remote (Worldwide Operations)
+      </p>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Services</h2>
+      <ul class="footer__links">
+        <li><a href="services.html#server">Server &amp; Infrastructure</a></li>
+        <li><a href="services.html#deployment">Website &amp; App Deployment</a></li>
+        <li><a href="services.html#devops">DevOps &amp; Automation</a></li>
+        <li><a href="services.html#migration">Website &amp; Data Migration</a></li>
+        <li><a href="services.html#email">Business Email &amp; Workspace</a></li>
+        <li><a href="services.html#support">Troubleshooting &amp; Support</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Technologies</h2>
+      <ul class="footer__links">
+        <li><a href="technologies.html#linux">Linux &amp; Cloud Servers</a></li>
+        <li><a href="technologies.html#webservers">Apache &amp; Nginx</a></li>
+        <li><a href="technologies.html#runtimes">Node.js &amp; PHP</a></li>
+        <li><a href="technologies.html#devops">Jenkins &amp; CI/CD</a></li>
+        <li><a href="technologies.html#workspaces">Google &amp; Microsoft 365</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Company &amp; Support</h2>
+      <a class="footer__email" href="mailto:info@itxops.com">info@itxops.com</a>
+      <ul class="footer__links footer__links--spaced">
+        <li><a href="about.html">About ITXOPS</a></li>
+        <li><a href="about.html#remote-model">Remote Operations Model</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="contact.html#location">Location: Remote</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>&copy; <span id="year">2026</span> ITXOPS. All rights reserved. &bull; Location: Remote (Global Support)</p>
+    <p class="footer__note">Build &middot; Automate &middot; Operate</p>
+  </div>
+</footer>
+
+<script>
+  document.documentElement.classList.remove('no-js');
+  var yr = document.getElementById('year');
+  if (yr) yr.textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
