@@ -5,3 +5,4 @@ node_modules/
 Thumbs.db
 ChatGPT Image*.png
 github_push.bat
+firebase_deploy.bat
