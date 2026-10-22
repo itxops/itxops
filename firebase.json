@@ -9,6 +9,10 @@
       "**/node_modules/**",
       "README.md",
       "*.ps1",
+      "*.bat",
+      "*.cmd",
+      "*.exe",
+      "*.sh",
       "ChatGPT Image*.png"
     ],
     "headers": [
