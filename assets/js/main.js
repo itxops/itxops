@@ -470,8 +470,8 @@
         '<strong>Ready to send!</strong> Your email client should now open. ' +
         'If it did not launch automatically, you can open via: ' +
         '<div class="webmail-bar" style="margin-top:8px;">' +
-        '<a class="webmail-link" href="' + gmailUrl + '" target="_blank" rel="noopener">Open in Gmail &rarr;</a>' +
-        '<a class="webmail-link" href="' + outlookUrl + '" target="_blank" rel="noopener">Open in Outlook &rarr;</a>' +
+        '<a class="webmail-link" href="' + gmailUrl + '" target="_blank" rel="noopener noreferrer">Open in Gmail &rarr;</a>' +
+        '<a class="webmail-link" href="' + outlookUrl + '" target="_blank" rel="noopener noreferrer">Open in Outlook &rarr;</a>' +
         '<a class="webmail-link" href="mailto:' + SUPPORT_EMAIL + '">Default App &rarr;</a>' +
         '</div>' +
         '<div style="margin-top:8px;font-size:.85rem;color:var(--ink-muted);">' +

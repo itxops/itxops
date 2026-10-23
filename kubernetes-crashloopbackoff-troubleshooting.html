@@ -451,5 +451,28 @@ spec:
 <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/js/main.js?v=2.6.0" defer></script>
 
+
+<!-- Firebase Analytics -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
+  import { getAnalytics } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js';
+
+  const firebaseConfig = {
+    apiKey: 'AIzaSyBmGu344lWxVzHS9fds435ScEZnaJuvamo',
+    authDomain: 'itxops-aac63.firebaseapp.com',
+    projectId: 'itxops-aac63',
+    storageBucket: 'itxops-aac63.firebasestorage.app',
+    messagingSenderId: '689023930582',
+    appId: '1:689023930582:web:88a6b586e13f58c07ef977',
+    measurementId: 'G-J6Q00C6EZF'
+  };
+
+  try {
+    getAnalytics(initializeApp(firebaseConfig));
+  } catch (err) {
+    // Analytics is non-critical; fails silently if blocked by user privacy extensions
+  }
+</script>
+
 </body>
 </html>

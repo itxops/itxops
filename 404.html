@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page Not Found (404) — ITXOPS</title>
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="The page you requested could not be found. Return to the ITXOPS homepage or contact our remote infrastructure engineering desk.">
 <meta name="theme-color" content="#1C253B">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/icon-180.png">
@@ -169,5 +170,28 @@
   var yr = document.getElementById('year');
   if (yr) yr.textContent = new Date().getFullYear();
 </script>
+
+<!-- Firebase Analytics -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
+  import { getAnalytics } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js';
+
+  const firebaseConfig = {
+    apiKey: 'AIzaSyBmGu344lWxVzHS9fds435ScEZnaJuvamo',
+    authDomain: 'itxops-aac63.firebaseapp.com',
+    projectId: 'itxops-aac63',
+    storageBucket: 'itxops-aac63.firebasestorage.app',
+    messagingSenderId: '689023930582',
+    appId: '1:689023930582:web:88a6b586e13f58c07ef977',
+    measurementId: 'G-J6Q00C6EZF'
+  };
+
+  try {
+    getAnalytics(initializeApp(firebaseConfig));
+  } catch (err) {
+    // Analytics is non-critical; fails silently if blocked by user privacy extensions
+  }
+</script>
+
 </body>
 </html>
