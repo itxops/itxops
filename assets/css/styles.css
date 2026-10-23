@@ -177,7 +177,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   letter-spacing: .01em;
   cursor: pointer;
   text-decoration: none;
-  white-space: nowrap;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
   transition: all .22s var(--ease);
 }
 .btn--primary {
@@ -217,9 +219,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .btn__arrow {
   width: 17px;
   height: 17px;
+  flex-shrink: 0;
   transition: transform .24s var(--ease);
 }
 .btn:hover .btn__arrow { transform: translateX(4px); }
+
+/* Section Action Buttons Wrap */
+.section__action {
+  text-align: center;
+  margin-top: 36px;
+  width: 100%;
+}
 
 /* ---------- header ---------- */
 .header {
@@ -1178,9 +1188,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 /* Cursor Spotlight on interactive cards */
-.service, .service-block, .tier, .val-card, .location-card, .acard, .scard, .cmethod {
+.service, .service-block, .val-card, .location-card, .acard, .scard, .cmethod {
   position: relative;
   overflow: hidden;
+}
+.tier {
+  position: relative;
+  overflow: visible;
 }
 .service::before, .service-block::before, .tier::before, .val-card::before, .location-card::before, .acard::before, .scard::before, .cmethod::before {
   content: '';
@@ -1456,12 +1470,14 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-color: var(--blue);
   box-shadow: 0 10px 32px rgba(24, 96, 197, .14);
   position: relative;
+  overflow: visible;
 }
 .tier__badge {
   position: absolute;
   top: -13px;
   left: 28px;
-  padding: 4px 14px;
+  z-index: 5;
+  padding: 5px 14px;
   background: linear-gradient(180deg, #1d6fe6 0%, #1557b7 100%);
   color: #fff;
   border-radius: 999px;
@@ -1470,6 +1486,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   letter-spacing: .08em;
   text-transform: uppercase;
   box-shadow: 0 3px 10px rgba(24, 96, 197, 0.35);
+  white-space: nowrap;
+  pointer-events: none;
 }
 .tier__name {
   font-size: 1.25rem;
@@ -1959,6 +1977,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   background: #10b981;
   display: inline-block;
   box-shadow: 0 0 8px #10b981;
+  flex-shrink: 0;
+}
+.remote-notice-strip__text-desktop {
+  display: inline;
+}
+.remote-notice-strip__text-mobile {
+  display: none;
 }
 
 /* Trust Pill Collection */
@@ -2098,14 +2123,46 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .section__lede { font-size: .98rem; margin-top: 12px; }
 
   .remote-notice-strip {
-    padding: 8px 14px;
-    font-size: .78rem;
-    line-height: 1.45;
-    gap: 8px;
+    padding: 7px 12px;
+    font-size: .76rem;
+    line-height: 1.35;
+    gap: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    justify-content: center;
   }
   .remote-notice-strip__dot {
     width: 6px;
     height: 6px;
+    flex-shrink: 0;
+  }
+  .remote-notice-strip__text-desktop {
+    display: none;
+  }
+  .remote-notice-strip__text-mobile {
+    display: inline;
+  }
+
+  .btn {
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.35;
+    padding: 12px 18px;
+  }
+  .btn--sm {
+    padding: 8px 14px;
+    font-size: .84rem;
+  }
+  .section__action {
+    margin-top: 26px;
+    padding-inline: 8px;
+  }
+  .section__action .btn {
+    width: 100%;
+    max-width: 380px;
+    margin-inline: auto;
+    display: inline-flex;
   }
 
   .header__inner { min-height: 60px; }
@@ -2237,8 +2294,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .tech__mark svg { width: 16px; height: 16px; }
   .tech__name { font-size: .86rem; }
 
-  .tiers { grid-template-columns: 1fr; gap: 20px; }
-  .tier { padding: 26px 20px; border-radius: var(--radius-lg); }
+  .tiers { grid-template-columns: 1fr; gap: 32px; }
+  .tier { padding: 26px 20px; border-radius: var(--radius-lg); overflow: visible !important; }
+  .tier--featured { margin-top: 14px; overflow: visible !important; }
+  .tier__badge { top: -14px; left: 20px; z-index: 5; }
   .tier__desc { min-height: auto; }
 
   .values-grid { grid-template-columns: 1fr; gap: 16px; }
