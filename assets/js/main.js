@@ -574,7 +574,9 @@
   function initBlogFilter() {
     var filterPills = document.querySelectorAll('.js-blog-filter');
     var searchInput = document.querySelector('.js-blog-search');
+    var clearBtn = document.querySelector('.js-blog-search-clear');
     var cards = document.querySelectorAll('.js-blog-card');
+    var featured = document.querySelector('.blog-featured');
     if (!cards.length) return;
 
     var activeCategory = 'all';
@@ -582,12 +584,32 @@
 
     function applyFilter() {
       var visibleCount = 0;
+      var query = searchQuery.trim().toLowerCase();
+
+      // 1. Filter the featured card if present
+      if (featured) {
+        var featCat = 'troubleshoot';
+        var featText = (featured.innerText || '').toLowerCase();
+        var featMatchesCat = (activeCategory === 'all' || activeCategory === featCat);
+        var featMatchesSearch = (!query || featText.indexOf(query) !== -1);
+
+        if (featMatchesCat && featMatchesSearch) {
+          featured.style.display = '';
+          if (query || activeCategory !== 'all') {
+            visibleCount++;
+          }
+        } else {
+          featured.style.display = 'none';
+        }
+      }
+
+      // 2. Filter the grid cards
       cards.forEach(function (card) {
         var cardCat = (card.getAttribute('data-category') || '').toLowerCase();
         var cardText = (card.innerText || '').toLowerCase();
 
         var matchesCategory = (activeCategory === 'all' || cardCat === activeCategory);
-        var matchesSearch = (!searchQuery || cardText.indexOf(searchQuery) !== -1);
+        var matchesSearch = (!query || cardText.indexOf(query) !== -1);
 
         if (matchesCategory && matchesSearch) {
           card.style.display = 'flex';
@@ -597,9 +619,15 @@
         }
       });
 
+      // 3. Toggle empty state notice
       var emptyNotice = document.getElementById('blog-empty-state');
       if (emptyNotice) {
         emptyNotice.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+
+      // 4. Toggle clear button visibility
+      if (clearBtn) {
+        clearBtn.style.display = query.length > 0 ? 'flex' : 'none';
       }
     }
 
@@ -613,9 +641,21 @@
     });
 
     if (searchInput) {
-      searchInput.addEventListener('input', function () {
-        searchQuery = searchInput.value.trim().toLowerCase();
+      ['input', 'search', 'change', 'keyup'].forEach(function (evt) {
+        searchInput.addEventListener(evt, function () {
+          searchQuery = searchInput.value;
+          applyFilter();
+        });
+      });
+    }
+
+    if (clearBtn && searchInput) {
+      clearBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        searchInput.value = '';
+        searchQuery = '';
         applyFilter();
+        searchInput.focus();
       });
     }
   }

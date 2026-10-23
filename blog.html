@@ -30,7 +30,7 @@
 <meta name="twitter:image" content="https://itxops.com/assets/img/itxops-social.png">
 
 <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/styles.css?v=2.6.0">
+<link rel="stylesheet" href="assets/css/styles.css?v=2.7.0">
 
 <script>
   (function () {
@@ -125,13 +125,14 @@
     <div class="container">
 
       <!-- Interactive Search & Filter Toolbar -->
-      <div class="blog-toolbar" data-reveal>
+      <div class="blog-toolbar">
         <div class="blog-search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input class="blog-search-input js-blog-search" type="search" placeholder="Search guides by keyword (e.g. Kubernetes, 502, AWS, Docker)..." aria-label="Search technical guides">
+          <input class="blog-search-input js-blog-search" type="search" placeholder="Search guides (Kubernetes, AWS, Nginx, Docker)..." aria-label="Search technical guides" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button class="blog-search-clear js-blog-search-clear" type="button" aria-label="Clear search" style="display:none;">&times;</button>
         </div>
 
         <div class="blog-pills" role="tablist" aria-label="Filter guides by category">
@@ -145,7 +146,7 @@
       </div>
 
       <!-- Featured Lead Post -->
-      <article class="blog-featured" data-reveal>
+      <article class="blog-featured">
         <div>
           <span class="blog-featured__lead-tag">Featured Technical Deep-Dive</span>
           <h2 class="blog-featured__title">
@@ -201,7 +202,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
       <div class="blog-grid" id="blog-grid">
 
         <!-- Post 1: Kubernetes CrashLoopBackOff -->
-        <article class="blog-card js-blog-card" data-category="troubleshoot" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="troubleshoot">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--troubleshoot">Troubleshooting</span>
             <span class="blog-time-badge">
@@ -231,7 +232,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 2: Fixing 502 Bad Gateway on Nginx -->
-        <article class="blog-card js-blog-card" data-category="troubleshoot" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="troubleshoot">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--troubleshoot">Troubleshooting</span>
             <span class="blog-time-badge">
@@ -261,7 +262,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 3: Cut AWS Bill by 30% -->
-        <article class="blog-card js-blog-card" data-category="cloud" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="cloud">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--cloud">Cloud Cost</span>
             <span class="blog-time-badge">
@@ -291,7 +292,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 4: Terraform vs. Ansible -->
-        <article class="blog-card js-blog-card" data-category="cloud" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="cloud">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--cloud">Cloud &amp; Architecture</span>
             <span class="blog-time-badge">
@@ -321,7 +322,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 5: Zero-Downtime Deployments with GitHub Actions & Docker -->
-        <article class="blog-card js-blog-card" data-category="cicd" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="cicd">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--cicd">CI/CD &amp; Automation</span>
             <span class="blog-time-badge">
@@ -351,7 +352,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 6: Building a Self-Hosted Runner on Ubuntu -->
-        <article class="blog-card js-blog-card" data-category="cicd" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="cicd">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--cicd">CI/CD &amp; Automation</span>
             <span class="blog-time-badge">
@@ -381,7 +382,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 7: SRE Survival Guide - 4 Golden Signals -->
-        <article class="blog-card js-blog-card" data-category="sre" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="sre">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--sre">Observability &amp; SRE</span>
             <span class="blog-time-badge">
@@ -411,7 +412,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 8: Prometheus + Grafana Production Setup Checklist -->
-        <article class="blog-card js-blog-card" data-category="sre" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="sre">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--sre">Observability &amp; SRE</span>
             <span class="blog-time-badge">
@@ -441,7 +442,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 9: Stop Hardcoding Secrets in CI/CD -->
-        <article class="blog-card js-blog-card" data-category="security" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="security">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--security">Security &amp; DevSecOps</span>
             <span class="blog-time-badge">
@@ -471,7 +472,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
         </article>
 
         <!-- Post 10: Vulnerability Scanning with Trivy -->
-        <article class="blog-card js-blog-card" data-category="security" data-reveal-item>
+        <article class="blog-card js-blog-card" data-category="security">
           <div class="blog-card__header">
             <span class="blog-cat-badge blog-cat-badge--security">Security &amp; DevSecOps</span>
             <span class="blog-time-badge">
@@ -515,7 +516,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
       </div>
 
       <!-- Lead Generation Callout Box -->
-      <div class="lead-box" data-reveal style="margin-top:56px;">
+      <div class="lead-box" style="margin-top:56px;">
         <div class="lead-box__inner">
           <div>
             <span class="lead-box__badge">100% Remote Engineering &bull; Direct Consultation</span>
@@ -628,7 +629,7 @@ $ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
 
 <script src="assets/js/vendor/gsap.min.js" defer></script>
 <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
-<script src="assets/js/main.js?v=2.6.0" defer></script>
+<script src="assets/js/main.js?v=2.7.0" defer></script>
 
 
 <!-- Firebase Analytics -->
