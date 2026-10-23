@@ -30,7 +30,7 @@
 <meta name="twitter:image" content="https://itxops.com/assets/img/itxops-social.png">
 
 <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/styles.css?v=2.5.0">
+<link rel="stylesheet" href="assets/css/styles.css?v=2.6.0">
 
 <script>
   (function () {
@@ -313,27 +313,26 @@ $ aws ce create-anomaly-subscription \
 <footer class="footer">
   <div class="container footer__top">
     <div class="footer__brand">
-      <a class="footer__logo" href="index.html" aria-label="ITXOPS — home">
-        <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="165" height="58" loading="lazy">
+      <a href="index.html" class="footer__logo-link" aria-label="ITXOPS — Home">
+        <img class="footer__logo" src="assets/img/itxops-wordmark-light.png" alt="ITXOPS" width="150" height="53" loading="lazy" decoding="async">
       </a>
-      <p class="footer__mission">
-        100% remote IT infrastructure, server management, and DevOps automation.
-        Delivering reliable systems for digital businesses worldwide with direct email engineering communication.
+      <p class="footer__tagline">IT &times; Operations</p>
+      <p class="footer__blurb">
+        Practical IT infrastructure, deployment, automation, and technical
+        support services for growing businesses.
       </p>
-      <div style="margin-top:16px;">
-        <span class="remote-badge">
-          <span class="remote-badge__dot" aria-hidden="true"></span>
-          Location: 100% Remote &bull; Global Operations
-        </span>
-      </div>
+      <p class="footer__location">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        Location: Remote (Worldwide Operations)
+      </p>
     </div>
 
     <div class="footer__col">
       <h2 class="footer__heading">Services</h2>
       <ul class="footer__links">
-        <li><a href="services.html#server">Linux Server Management</a></li>
-        <li><a href="services.html#deployment">Application Deployment</a></li>
-        <li><a href="services.html#devops">DevOps &amp; CI/CD Automation</a></li>
+        <li><a href="services.html#server">Server &amp; Infrastructure</a></li>
+        <li><a href="services.html#deployment">Website &amp; App Deployment</a></li>
+        <li><a href="services.html#devops">DevOps &amp; Automation</a></li>
         <li><a href="services.html#migration">Website &amp; Data Migration</a></li>
         <li><a href="services.html#email">Business Email &amp; Workspace</a></li>
         <li><a href="services.html#support">Troubleshooting &amp; Support</a></li>
@@ -354,14 +353,15 @@ $ aws ce create-anomaly-subscription \
     </div>
 
     <div class="footer__col">
-      <h2 class="footer__heading">Resources &amp; Blog</h2>
+      <h2 class="footer__heading">Company &amp; Support</h2>
+      <a class="footer__email" href="mailto:info@itxops.com">info@itxops.com</a>
       <ul class="footer__links footer__links--spaced">
-        <li><a href="blog.html" style="color:#60a5fa;font-weight:600;">Engineering Blog</a></li>
-        <li><a href="kubernetes-crashloopbackoff-troubleshooting.html">Kubernetes CrashLoopBackOff Guide</a></li>
-        <li><a href="nginx-502-bad-gateway-troubleshooting.html">Fixing Nginx 502 Bad Gateway</a></li>
-        <li><a href="cut-aws-bill-30-percent-strategies.html">7 Ways to Cut AWS Bill by 30%</a></li>
         <li><a href="about.html">About ITXOPS</a></li>
-        <li><a href="contact.html">Contact Engineering</a></li>
+        <li><a href="about.html#remote-model">Remote Operations Model</a></li>
+        <li><a href="about.html#how-we-work">How We Work</a></li>
+        <li><a href="blog.html" style="color:#60a5fa;font-weight:600;">Engineering Blog &rarr;</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="contact.html#location">Location: Remote</a></li>
       </ul>
     </div>
   </div>
@@ -394,7 +394,7 @@ $ aws ce create-anomaly-subscription \
 
 <script src="assets/js/vendor/gsap.min.js" defer></script>
 <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
-<script src="assets/js/main.js?v=2.5.0" defer></script>
+<script src="assets/js/main.js?v=2.6.0" defer></script>
 
 </body>
 </html>

@@ -723,7 +723,16 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   gap: 40px;
   padding-bottom: 44px;
 }
-.footer__logo { width: 150px; height: auto; }
+.footer__logo-link {
+  display: inline-block;
+  line-height: 0;
+  text-decoration: none;
+}
+.footer__logo {
+  width: 150px;
+  height: auto;
+  display: block;
+}
 .footer__blurb {
   margin-top: 16px;
   max-width: 34ch;
