@@ -522,9 +522,113 @@
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCopyEmailWidgets);
-  } else {
+  /* ---------- interactive copy code blocks ---------- */
+  function initCopyCodeBlocks() {
+    var copyButtons = document.querySelectorAll('.js-code-copy');
+    copyButtons.forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var codeBlock = btn.closest('.code-box');
+        if (!codeBlock) return;
+        var codeEl = codeBlock.querySelector('code');
+        if (!codeEl) return;
+        var codeText = codeEl.innerText.replace(/^\$ /gm, '');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(codeText).then(function () {
+            handleCopied(btn);
+          }).catch(function () {
+            fallbackCodeCopy(codeText, btn);
+          });
+        } else {
+          fallbackCodeCopy(codeText, btn);
+        }
+      });
+    });
+
+    function handleCopied(btn) {
+      var origText = btn.innerHTML;
+      btn.classList.add('is-copied');
+      btn.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13" style="display:inline-block;vertical-align:-2px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Copied!';
+      setTimeout(function () {
+        btn.classList.remove('is-copied');
+        btn.innerHTML = origText;
+      }, 2200);
+    }
+
+    function fallbackCodeCopy(text, btn) {
+      var textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        handleCopied(btn);
+      } catch (err) {}
+      document.body.removeChild(textarea);
+    }
+  }
+
+  /* ---------- real-time blog search & category filter ---------- */
+  function initBlogFilter() {
+    var filterPills = document.querySelectorAll('.js-blog-filter');
+    var searchInput = document.querySelector('.js-blog-search');
+    var cards = document.querySelectorAll('.js-blog-card');
+    if (!cards.length) return;
+
+    var activeCategory = 'all';
+    var searchQuery = '';
+
+    function applyFilter() {
+      var visibleCount = 0;
+      cards.forEach(function (card) {
+        var cardCat = (card.getAttribute('data-category') || '').toLowerCase();
+        var cardText = (card.innerText || '').toLowerCase();
+
+        var matchesCategory = (activeCategory === 'all' || cardCat === activeCategory);
+        var matchesSearch = (!searchQuery || cardText.indexOf(searchQuery) !== -1);
+
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      var emptyNotice = document.getElementById('blog-empty-state');
+      if (emptyNotice) {
+        emptyNotice.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+
+    filterPills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        filterPills.forEach(function (p) { p.classList.remove('is-active'); });
+        pill.classList.add('is-active');
+        activeCategory = (pill.getAttribute('data-filter') || 'all').toLowerCase();
+        applyFilter();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        searchQuery = searchInput.value.trim().toLowerCase();
+        applyFilter();
+      });
+    }
+  }
+
+  function initInteractiveFeatures() {
     initCopyEmailWidgets();
+    initCopyCodeBlocks();
+    initBlogFilter();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initInteractiveFeatures);
+  } else {
+    initInteractiveFeatures();
   }
 })();

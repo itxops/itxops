@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engineering Blog &amp; DevOps Guides — ITXOPS</title>
+<meta name="description" content="Actionable engineering guides, Linux server troubleshooting, CI/CD pipeline automation, AWS cost optimization, and SRE best practices from the 100% remote ITXOps engineering team.">
+<meta name="keywords" content="Kubernetes CrashLoopBackOff fix, Nginx 502 bad gateway troubleshooting, cut AWS bill 30 percent, Terraform vs Ansible, zero downtime deployment GitHub Actions, GitHub self hosted runner Ubuntu, SRE four golden signals, Prometheus Grafana production setup, CI/CD secrets management, Trivy Docker vulnerability scanning, DevOps blog, remote sysadmin guides">
+<meta name="author" content="ITXOPS">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="theme-color" content="#1C253B">
+<link rel="canonical" href="https://itxops.com/blog">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<link rel="manifest" href="site.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="ITXOPS">
+<meta property="og:title" content="Engineering Blog &amp; DevOps Guides — ITXOPS">
+<meta property="og:description" content="Production-tested guides on Linux server administration, Kubernetes error triage, AWS cost cutting, and CI/CD automation.">
+<meta property="og:url" content="https://itxops.com/blog">
+<meta property="og:image" content="https://itxops.com/assets/img/itxops-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Engineering Blog &amp; DevOps Guides — ITXOPS">
+<meta name="twitter:description" content="Field-tested guides on Linux administration, Kubernetes triage, AWS cost reduction, and automated CI/CD.">
+<meta name="twitter:image" content="https://itxops.com/assets/img/itxops-social.png">
+
+<link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/styles.css?v=2.3.0">
+
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.remove('no-js');
+    if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      d.classList.add('js-anim');
+      setTimeout(function () {
+        if (!window.__itxAnim) d.classList.remove('js-anim');
+      }, 2500);
+    }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="remote-notice-strip">
+  <span class="remote-notice-strip__dot" aria-hidden="true"></span>
+  <span class="remote-notice-strip__text-desktop"><strong>100% Remote Operations:</strong> Field-tested engineering knowledge &bull; Direct technical support via email: <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+  <span class="remote-notice-strip__text-mobile"><strong>100% Remote Ops:</strong> Direct inquiries via <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+</div>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="progress" aria-hidden="true"><span class="progress__bar" id="progress-bar"></span></div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a class="header__logo" href="index.html" aria-label="ITXOPS — home">
+      <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="155" height="55" fetchpriority="high" decoding="async">
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="services.html">Services</a></li>
+        <li><a class="nav__link" href="technologies.html">Technologies</a></li>
+        <li><a class="nav__link is-active" href="blog.html" aria-current="page">Blog</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <span class="remote-badge" title="Operating 100% Remotely Worldwide">
+          <span class="remote-badge__dot" aria-hidden="true"></span>Location: Remote
+        </span>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">Get Started</a>
+      </div>
+    </nav>
+
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ Hero Section ============ -->
+  <section class="subhero" style="background:linear-gradient(180deg, #162035 0%, #101726 100%);color:#ffffff;padding-block:clamp(48px, 6vw, 76px);">
+    <div class="container">
+      <div style="max-width:800px;">
+        <div class="breadcrumb" style="background:rgba(255,255,255,0.08);color:#cbd5e1;border:1px solid rgba(255,255,255,0.12);">
+          <a href="index.html" style="color:#93c5fd;">Home</a>
+          <span class="breadcrumb__sep">/</span>
+          <span>Engineering Blog</span>
+        </div>
+        <p class="eyebrow" style="color:#60a5fa;margin-top:16px;">
+          <span class="eyebrow__dot" aria-hidden="true" style="background:#60a5fa;box-shadow:0 0 10px #60a5fa;"></span>
+          ENGINEERING DESK &bull; LINUX &bull; DEVOPS &bull; CLOUD
+        </p>
+        <h1 class="subhero__title" style="color:#ffffff;">Practical Technical Guides &amp; Infrastructure Insights</h1>
+        <p class="subhero__text" style="color:#cbd5e1;font-size:1.06rem;line-height:1.65;margin-top:16px;">
+          Field-tested troubleshooting recipes, zero-downtime deployment patterns, cloud cost reduction benchmarks,
+          and SRE observability guides written by the remote engineers who operate live production systems worldwide.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px;">
+          <span class="remote-badge" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.16);color:#e2e8f0;">
+            <span class="remote-badge__dot" aria-hidden="true"></span>
+            10 Production Guides &bull; Free &amp; Open
+          </span>
+          <span class="remote-badge" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.16);color:#e2e8f0;">
+            Direct Engineer Support: info@itxops.com
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Main Content ============ -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Interactive Search & Filter Toolbar -->
+      <div class="blog-toolbar" data-reveal>
+        <div class="blog-search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input class="blog-search-input js-blog-search" type="search" placeholder="Search guides by keyword (e.g. Kubernetes, 502, AWS, Docker)..." aria-label="Search technical guides">
+        </div>
+
+        <div class="blog-pills" role="tablist" aria-label="Filter guides by category">
+          <button class="blog-pill is-active js-blog-filter" type="button" data-filter="all">All Guides (10)</button>
+          <button class="blog-pill js-blog-filter" type="button" data-filter="troubleshoot">Troubleshooting (2)</button>
+          <button class="blog-pill js-blog-filter" type="button" data-filter="cloud">Cloud Cost (2)</button>
+          <button class="blog-pill js-blog-filter" type="button" data-filter="cicd">CI/CD &amp; DevOps (2)</button>
+          <button class="blog-pill js-blog-filter" type="button" data-filter="sre">Observability &amp; SRE (2)</button>
+          <button class="blog-pill js-blog-filter" type="button" data-filter="security">Security &amp; DevSecOps (2)</button>
+        </div>
+      </div>
+
+      <!-- Featured Lead Post -->
+      <article class="blog-featured" data-reveal>
+        <div>
+          <span class="blog-featured__lead-tag">Featured Technical Deep-Dive</span>
+          <h2 class="blog-featured__title">
+            <a href="kubernetes-crashloopbackoff-troubleshooting.html">How to Troubleshoot Kubernetes CrashLoopBackOff Step-by-Step</a>
+          </h2>
+          <p class="blog-featured__desc">
+            A container in CrashLoopBackOff has started, failed, and is repeatedly restarting with exponential backoff.
+            Follow our 4-step diagnostic triage workflow to inspect exit codes, uncover OOMKilled events, and fix root causes fast.
+          </p>
+          <div class="blog-featured__meta">
+            <span class="blog-time-badge" style="color:#93c5fd;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              6 min read
+            </span>
+            <span style="color:#cbd5e1;">Target: <strong>DevOps Engineers &bull; SysAdmins</strong></span>
+            <span style="color:#93c5fd;">#Kubernetes #Troubleshooting</span>
+          </div>
+          <div style="margin-top:24px;">
+            <a class="btn btn--primary" href="kubernetes-crashloopbackoff-troubleshooting.html" style="box-shadow:0 4px 14px rgba(27,106,219,0.4);">
+              Read Full Troubleshooting Guide
+              <svg class="btn__arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 10h11M11 6l4 4-4 4"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="blog-featured__code" aria-hidden="true">
+          <div class="code-box__head">
+            <div class="code-box__lang">
+              <span class="code-box__dots">
+                <span class="code-box__dot code-box__dot--red"></span>
+                <span class="code-box__dot code-box__dot--yellow"></span>
+                <span class="code-box__dot code-box__dot--green"></span>
+              </span>
+              bash &bull; triage
+            </div>
+            <button class="code-box__copy js-code-copy" type="button" aria-label="Copy snippet">Copy</button>
+          </div>
+          <pre><code>$ kubectl get pods -n production
+NAME                      READY   STATUS             RESTARTS
+api-gateway-7df89c-x9p2   0/1     CrashLoopBackOff   6 (2m ago)
+
+# 1. Inspect exit codes & OOM
+$ kubectl describe pod api-gateway-7df89c-x9p2
+
+# 2. Check previous container crash logs
+$ kubectl logs api-gateway-7df89c-x9p2 --previous</code></pre>
+        </div>
+      </article>
+
+      <!-- All 10 Blog Posts Grid -->
+      <div class="blog-grid" id="blog-grid">
+
+        <!-- Post 1: Kubernetes CrashLoopBackOff -->
+        <article class="blog-card js-blog-card" data-category="troubleshoot" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--troubleshoot">Troubleshooting</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              6 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="kubernetes-crashloopbackoff-troubleshooting.html">How to Troubleshoot Kubernetes CrashLoopBackOff Step-by-Step</a>
+          </h3>
+          <p class="blog-card__hook">
+            Pods repeatedly crashing with exit code 137 or 1? Learn the exact 4-step triage workflow used by senior SREs to diagnose OOMKilled events, bad commands, and misconfigured environment variables.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>DevOps Engineers &bull; SysAdmins</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#Kubernetes</span>
+            <span class="blog-tag">#Containers</span>
+            <span class="blog-tag">#kubectl</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="kubernetes-crashloopbackoff-troubleshooting.html">
+              Read Guide <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 2: Fixing 502 Bad Gateway on Nginx -->
+        <article class="blog-card js-blog-card" data-category="troubleshoot" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--troubleshoot">Troubleshooting</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              5 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="nginx-502-bad-gateway-troubleshooting.html">Fixing 502 Bad Gateway on Nginx Reverse Proxy: The Complete Field Guide</a>
+          </h3>
+          <p class="blog-card__hook">
+            Understand the critical difference between 502 and 504. Learn how to verify upstream sockets, troubleshoot PHP-FPM / Node.js PM2 process crashes, and tune buffer settings to stop gateway errors immediately.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>Webmasters &bull; Backend Engineers</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#Nginx</span>
+            <span class="blog-tag">#NodeJS</span>
+            <span class="blog-tag">#PHP-FPM</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="nginx-502-bad-gateway-troubleshooting.html">
+              Read Guide <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 3: Cut AWS Bill by 30% -->
+        <article class="blog-card js-blog-card" data-category="cloud" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--cloud">Cloud Cost</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              8 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="cut-aws-bill-30-percent-strategies.html">7 Proven Strategies to Cut Your AWS Bill by 30% Without Hurting Performance</a>
+          </h3>
+          <p class="blog-card__hook">
+            Unattached EBS volumes, zombie elastic IPs, and over-provisioned EC2 instances burn thousands of dollars monthly. Here is our exact blueprint to rightsize infrastructure and migrate to ARM64 Graviton instances safely.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>Startup Founders &bull; Engineering Leads</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#AWS</span>
+            <span class="blog-tag">#FinOps</span>
+            <span class="blog-tag">#CloudCost</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="cut-aws-bill-30-percent-strategies.html">
+              Read Guide <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 4: Terraform vs. Ansible -->
+        <article class="blog-card js-blog-card" data-category="cloud" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--cloud">Cloud &amp; Architecture</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              7 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="contact.html?topic=DevOps%20/%20Automation">Terraform vs. Ansible: When Should You Use Which? (Or Both)</a>
+          </h3>
+          <p class="blog-card__hook">
+            Orchestration vs Configuration Management: understand immutable vs mutable infrastructure, why treating them as competitors is a mistake, and the industry-standard pattern of combining them in a single CI/CD pipeline.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>Infrastructure Engineers &bull; Cloud Architects</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#Terraform</span>
+            <span class="blog-tag">#Ansible</span>
+            <span class="blog-tag">#IaC</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="contact.html?topic=DevOps%20/%20Automation">
+              Request Consultation <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 5: Zero-Downtime Deployments with GitHub Actions & Docker -->
+        <article class="blog-card js-blog-card" data-category="cicd" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--cicd">CI/CD &amp; Automation</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              7 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="contact.html?topic=Application%20Deployment">Zero-Downtime Deployments with GitHub Actions and Docker</a>
+          </h3>
+          <p class="blog-card__hook">
+            Say goodbye to deployment maintenance windows. Learn how to implement rolling updates, health-check verification gates, and instant automated rollbacks in your GitHub Actions workflows without expensive enterprise platforms.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>DevOps Practitioners &bull; Developers</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#GitHubActions</span>
+            <span class="blog-tag">#Docker</span>
+            <span class="blog-tag">#CICD</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="contact.html?topic=Application%20Deployment">
+              Explore Deployments <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 6: Building a Self-Hosted Runner on Ubuntu -->
+        <article class="blog-card js-blog-card" data-category="cicd" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--cicd">CI/CD &amp; Automation</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              6 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="contact.html?topic=DevOps%20/%20Automation">Building a Self-Hosted Runner on AWS / DigitalOcean for GitHub Actions</a>
+          </h3>
+          <p class="blog-card__hook">
+            Tired of high GitHub Actions monthly billings for long-running builds? Here is how to configure a secured, hardened self-hosted runner on Ubuntu with automatic cleanup and Docker socket containment.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>Teams Optimizing CI/CD Costs &bull; Tech Leads</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#GitHubRunners</span>
+            <span class="blog-tag">#Ubuntu</span>
+            <span class="blog-tag">#Automation</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="contact.html?topic=DevOps%20/%20Automation">
+              Build Runner Pipeline <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 7: SRE Survival Guide - 4 Golden Signals -->
+        <article class="blog-card js-blog-card" data-category="sre" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--sre">Observability &amp; SRE</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              8 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="contact.html?topic=Server%20Management">The SRE Survival Guide: 4 Golden Signals Every System Should Monitor</a>
+          </h3>
+          <p class="blog-card__hook">
+            Latency, Traffic, Errors, and Saturation: discover how the Google SRE framework prevents alert fatigue, silences useless notifications, and sets up actionable SLOs for mission-critical web applications.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>SREs &bull; IT Operations Managers</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#SRE</span>
+            <span class="blog-tag">#Monitoring</span>
+            <span class="blog-tag">#SLO</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="contact.html?topic=Server%20Management">
+              Inquire SRE Setup <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 8: Prometheus + Grafana Production Setup Checklist -->
+        <article class="blog-card js-blog-card" data-category="sre" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--sre">Observability &amp; SRE</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              6 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="contact.html?topic=Server%20Management">Prometheus + Grafana: Production Setup Checklist &amp; Alert Rules</a>
+          </h3>
+          <p class="blog-card__hook">
+            A production-ready checklist for deploying Node Exporter, Alertmanager routing, and clean Grafana dashboards that give you instantaneous visibility into disk IOPS, memory leaks, and CPU spikes.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>SysAdmins &bull; DevOps Teams</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#Prometheus</span>
+            <span class="blog-tag">#Grafana</span>
+            <span class="blog-tag">#LinuxMetrics</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="contact.html?topic=Server%20Management">
+              Get Monitoring Audit <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 9: Stop Hardcoding Secrets in CI/CD -->
+        <article class="blog-card js-blog-card" data-category="security" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--security">Security &amp; DevSecOps</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              7 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="contact.html?topic=DevOps%20/%20Automation">Stop Hardcoding Secrets: Managing Environment Variables Securely in CI/CD</a>
+          </h3>
+          <p class="blog-card__hook">
+            Accidentally committed an API token or database password? Learn how to migrate from plaintext .env files to HashiCorp Vault, AWS Secrets Manager, or GitHub Encrypted Secrets with zero pipeline breakage.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>Developers &bull; Security Engineers</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#DevSecOps</span>
+            <span class="blog-tag">#Secrets</span>
+            <span class="blog-tag">#Security</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="contact.html?topic=DevOps%20/%20Automation">
+              Secure Your Secrets <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Post 10: Vulnerability Scanning with Trivy -->
+        <article class="blog-card js-blog-card" data-category="security" data-reveal-item>
+          <div class="blog-card__header">
+            <span class="blog-cat-badge blog-cat-badge--security">Security &amp; DevSecOps</span>
+            <span class="blog-time-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              5 min read
+            </span>
+          </div>
+          <h3 class="blog-card__title">
+            <a href="contact.html?topic=DevOps%20/%20Automation">Automating Vulnerability Scanning with Trivy in Docker Builds</a>
+          </h3>
+          <p class="blog-card__hook">
+            Catch critical CVEs before containers hit production. Learn how to configure Trivy in CI pipelines to automatically fail builds on HIGH/CRITICAL vulnerabilities and transition to minimal Alpine / Distroless base images.
+          </p>
+          <div class="blog-card__audience">
+            <span>Target: <strong>Security Engineers &bull; DevOps Engineers</strong></span>
+          </div>
+          <div class="blog-card__tags">
+            <span class="blog-tag">#Trivy</span>
+            <span class="blog-tag">#Docker</span>
+            <span class="blog-tag">#CVE</span>
+          </div>
+          <div class="blog-card__footer">
+            <a class="blog-card__link" href="contact.html?topic=DevOps%20/%20Automation">
+              Schedule Security Audit <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Empty Filter State -->
+      <div id="blog-empty-state" style="display:none;text-align:center;padding:48px 24px;background:#ffffff;border:1px dashed var(--line);border-radius:var(--radius-xl);margin-top:24px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:40px;height:40px;margin-inline:auto;color:var(--ink-muted);margin-bottom:12px;">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <h3 style="font-size:1.15rem;color:var(--navy);">No technical guides matched your search</h3>
+        <p style="color:var(--ink-muted);font-size:.92rem;margin-top:6px;max-width:440px;margin-inline:auto;">
+          Try adjusting your keywords or filter by category. If you have a specific infrastructure challenge, email our engineering desk directly at <a href="mailto:info@itxops.com" style="color:var(--blue);font-weight:600;">info@itxops.com</a>.
+        </p>
+      </div>
+
+      <!-- Lead Generation Callout Box -->
+      <div class="lead-box" data-reveal style="margin-top:56px;">
+        <div class="lead-box__inner">
+          <div>
+            <span class="lead-box__badge">100% Remote Engineering &bull; Direct Consultation</span>
+            <h3 class="lead-box__title">Facing a Critical Production Outage or Need an AWS Cost Audit?</h3>
+            <p class="lead-box__desc">
+              ITXOps engineers handle emergency Linux server recovery, zero-downtime database and website migrations,
+              CI/CD automation, and cloud rightsizing for growing businesses worldwide. No phone queues &mdash; direct email response.
+            </p>
+          </div>
+          <div class="lead-box__cta">
+            <a class="btn btn--primary btn--block" href="contact.html">
+              Contact Engineering Desk
+              <svg class="btn__arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 10h11M11 6l4 4-4 4"></path>
+              </svg>
+            </a>
+            <button class="copy-email-widget js-copy-email" type="button" aria-label="Copy email address" data-email="info@itxops.com" style="width:100%;justify-content:center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>info@itxops.com</span>
+              <span class="copy-email-widget__toast">Copied to clipboard!</span>
+            </button>
+            <span class="lead-box__cta-note">Location: 100% Remote &bull; Response within 2 hours</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <a class="footer__logo" href="index.html" aria-label="ITXOPS — home">
+        <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="165" height="58" loading="lazy">
+      </a>
+      <p class="footer__mission">
+        100% remote IT infrastructure, server management, and DevOps automation.
+        Delivering reliable systems for digital businesses worldwide with direct email engineering communication.
+      </p>
+      <div style="margin-top:16px;">
+        <span class="remote-badge">
+          <span class="remote-badge__dot" aria-hidden="true"></span>
+          Location: 100% Remote &bull; Global Operations
+        </span>
+      </div>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Services</h2>
+      <ul class="footer__links">
+        <li><a href="services.html#server">Linux Server Management</a></li>
+        <li><a href="services.html#deployment">Application Deployment</a></li>
+        <li><a href="services.html#devops">DevOps &amp; CI/CD Automation</a></li>
+        <li><a href="services.html#migration">Website &amp; Data Migration</a></li>
+        <li><a href="services.html#email">Business Email &amp; Workspace</a></li>
+        <li><a href="services.html#support">Troubleshooting &amp; Support</a></li>
+        <li><a href="services.html" style="color:#60a5fa;font-weight:600;">View All Services &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Technologies</h2>
+      <ul class="footer__links">
+        <li><a href="technologies.html#linux">Linux &amp; Cloud Servers</a></li>
+        <li><a href="technologies.html#webservers">Apache &amp; Nginx</a></li>
+        <li><a href="technologies.html#runtimes">Node.js &amp; PHP</a></li>
+        <li><a href="technologies.html#devops">Jenkins &amp; CI/CD</a></li>
+        <li><a href="technologies.html#workspaces">Google &amp; Microsoft 365</a></li>
+        <li><a href="technologies.html" style="color:#60a5fa;font-weight:600;">Full Tech Stack &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Resources &amp; Blog</h2>
+      <ul class="footer__links footer__links--spaced">
+        <li><a href="blog.html" style="color:#60a5fa;font-weight:600;">Engineering Blog</a></li>
+        <li><a href="kubernetes-crashloopbackoff-troubleshooting.html">Kubernetes CrashLoopBackOff Guide</a></li>
+        <li><a href="nginx-502-bad-gateway-troubleshooting.html">Fixing Nginx 502 Bad Gateway</a></li>
+        <li><a href="cut-aws-bill-30-percent-strategies.html">7 Ways to Cut AWS Bill by 30%</a></li>
+        <li><a href="about.html">About ITXOPS</a></li>
+        <li><a href="contact.html">Contact Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>&copy; <span id="year">2026</span> ITXOPS. All rights reserved. &bull; Location: Remote (Global Support)</p>
+    <p class="footer__note">Build &middot; Automate &middot; Operate</p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "@id": "https://itxops.com/blog#blog",
+  "name": "ITXOPS Engineering Blog",
+  "url": "https://itxops.com/blog",
+  "description": "Technical guides, troubleshooting walk-throughs, and infrastructure insights on Linux, Kubernetes, CI/CD, and AWS.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "ITXOPS",
+    "url": "https://itxops.com/",
+    "logo": "https://itxops.com/assets/img/itxops-logo.png"
+  }
+}
+</script>
+
+<script src="assets/js/vendor/gsap.min.js" defer></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/main.js?v=2.3.0" defer></script>
+
+</body>
+</html>

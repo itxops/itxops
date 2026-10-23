@@ -71,4 +71,52 @@
     </image:image>
   </url>
 
+  <!-- Blog Hub Page -->
+  <url>
+    <loc>https://itxops.com/blog</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>ITXOPS Engineering Blog &amp; Technical Guides</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 1: Kubernetes CrashLoopBackOff -->
+  <url>
+    <loc>https://itxops.com/kubernetes-crashloopbackoff-troubleshooting</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>How to Troubleshoot Kubernetes CrashLoopBackOff Step-by-Step</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 2: Fixing 502 Bad Gateway on Nginx -->
+  <url>
+    <loc>https://itxops.com/nginx-502-bad-gateway-troubleshooting</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>Fixing 502 Bad Gateway on Nginx Reverse Proxy</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 3: 7 Strategies to Cut AWS Bill by 30% -->
+  <url>
+    <loc>https://itxops.com/cut-aws-bill-30-percent-strategies</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>7 Proven Strategies to Cut Your AWS Bill by 30%</image:title>
+    </image:image>
+  </url>
+
 </urlset>

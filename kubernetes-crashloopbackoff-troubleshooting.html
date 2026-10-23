@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Troubleshoot Kubernetes CrashLoopBackOff Step-by-Step — ITXOPS</title>
+<meta name="description" content="Complete step-by-step diagnostic guide to fix Kubernetes CrashLoopBackOff. Learn how to inspect exit codes, resolve OOMKilled 137 errors, debug previous container logs, and prevent pod crash loops.">
+<meta name="keywords" content="Kubernetes CrashLoopBackOff, fix CrashLoopBackOff, kubectl describe pod, kubectl logs previous, exit code 137, OOMKilled Kubernetes, pod crashing Kubernetes, DevOps troubleshooting guide, Kubernetes debugging">
+<meta name="author" content="ITXOPS Engineering Desk">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="theme-color" content="#1C253B">
+<link rel="canonical" href="https://itxops.com/kubernetes-crashloopbackoff-troubleshooting">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<link rel="manifest" href="site.webmanifest">
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="ITXOPS">
+<meta property="og:title" content="How to Troubleshoot Kubernetes CrashLoopBackOff Step-by-Step — ITXOPS">
+<meta property="og:description" content="Diagnose exit codes, OOMKilled events, and container crash loops with our 4-step SRE troubleshooting workflow.">
+<meta property="og:url" content="https://itxops.com/kubernetes-crashloopbackoff-troubleshooting">
+<meta property="og:image" content="https://itxops.com/assets/img/itxops-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Troubleshoot Kubernetes CrashLoopBackOff — ITXOPS">
+<meta name="twitter:description" content="Step-by-step diagnostic triage guide to resolve Kubernetes CrashLoopBackOff and OOMKilled exit code 137.">
+<meta name="twitter:image" content="https://itxops.com/assets/img/itxops-social.png">
+
+<link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/styles.css?v=2.3.0">
+
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.remove('no-js');
+    if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      d.classList.add('js-anim');
+      setTimeout(function () {
+        if (!window.__itxAnim) d.classList.remove('js-anim');
+      }, 2500);
+    }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="remote-notice-strip">
+  <span class="remote-notice-strip__dot" aria-hidden="true"></span>
+  <span class="remote-notice-strip__text-desktop"><strong>100% Remote Operations:</strong> Production troubleshooting knowledge &bull; Direct technical assistance via email: <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+  <span class="remote-notice-strip__text-mobile"><strong>100% Remote Ops:</strong> Direct inquiries via <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+</div>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="progress" aria-hidden="true"><span class="progress__bar" id="progress-bar"></span></div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a class="header__logo" href="index.html" aria-label="ITXOPS — home">
+      <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="155" height="55" fetchpriority="high" decoding="async">
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="services.html">Services</a></li>
+        <li><a class="nav__link" href="technologies.html">Technologies</a></li>
+        <li><a class="nav__link is-active" href="blog.html">Blog</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <span class="remote-badge" title="Operating 100% Remotely Worldwide">
+          <span class="remote-badge__dot" aria-hidden="true"></span>Location: Remote
+        </span>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">Get Started</a>
+      </div>
+    </nav>
+
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <article class="article-wrap">
+    <div class="container">
+
+      <!-- Article Header -->
+      <header class="article-header" data-reveal>
+        <div class="breadcrumb" style="margin-bottom:16px;">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb__sep">/</span>
+          <a href="blog.html">Blog</a>
+          <span class="breadcrumb__sep">/</span>
+          <span>Troubleshooting</span>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:14px;">
+          <span class="blog-cat-badge blog-cat-badge--troubleshoot">Kubernetes Triage</span>
+          <span class="blog-time-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            6 min read
+          </span>
+          <span class="blog-tag">#Kubernetes</span>
+          <span class="blog-tag">#DevOps</span>
+          <span class="blog-tag">#OOMKilled</span>
+        </div>
+
+        <h1 style="font-size:clamp(1.85rem, 4vw, 2.7rem);color:var(--navy);line-height:1.2;margin-bottom:16px;">
+          How to Troubleshoot Kubernetes CrashLoopBackOff Step-by-Step
+        </h1>
+
+        <p style="font-size:1.1rem;color:var(--ink-muted);line-height:1.65;max-width:760px;">
+          One of the most frequent alerts in containerized production environments. Here is the exact diagnostic workflow to identify exit codes, isolate memory limits, and stop the crash loop permanently.
+        </p>
+
+        <div style="display:flex;align-items:center;gap:14px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line-soft);">
+          <div style="width:42px;height:42px;border-radius:50%;background:#1e293b;color:#60a5fa;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;">
+            ITX
+          </div>
+          <div>
+            <div style="font-weight:700;color:var(--navy);font-size:.95rem;">ITXOps Engineering Desk</div>
+            <div style="font-size:.82rem;color:var(--ink-muted);">100% Remote Infrastructure &bull; Operations Field Guide</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Layout: Content + Sticky TOC -->
+      <div class="article-layout">
+
+        <!-- Main Guide Body -->
+        <div class="article-content" data-reveal>
+
+          <p>
+            When deploying microservices to Kubernetes, few statuses cause more immediate confusion than <code>CrashLoopBackOff</code>.
+            The word <strong>CrashLoopBackOff</strong> sounds severe, but understanding its lifecycle demystifies the error:
+            it is not an error generated by your code &mdash; it is an informational status emitted by the kubelet signaling that your container started,
+            exited unexpectedly, and Kubernetes is waiting before trying to start it again.
+          </p>
+
+          <h2 id="what-it-means">1. What CrashLoopBackOff Actually Means</h2>
+          <p>
+            The lifecycle follows a simple mathematical progression:
+          </p>
+          <ol>
+            <li>The container runs its entrypoint process.</li>
+            <li>The process terminates with a non-zero exit code (or is terminated by the Linux kernel).</li>
+            <li>The kubelet restarts the container immediately.</li>
+            <li>If the crash recurs, Kubernetes applies an exponential back-off delay: 10s, 20s, 40s, 80s, up to a maximum of 300 seconds (5 minutes).</li>
+          </ol>
+
+          <div class="callout callout--info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div class="callout__body">
+              <div class="callout__title">Important Distinction</div>
+              The container image itself is downloaded and valid. If the image couldn't be pulled, the status would be <code>ImagePullBackOff</code>. The container is crashing <em>after</em> initialization.
+            </div>
+          </div>
+
+          <h2 id="common-causes">2. The 4 Root Causes and Their Exit Codes</h2>
+          <p>
+            Containers always exit with an exit code. Inspecting the exit code narrows down the root cause in 90% of outages:
+          </p>
+          <ul>
+            <li><strong>Exit Code 137 (SIGKILL / OOMKilled):</strong> The container exceeded its memory limit defined under <code>resources.limits.memory</code>, or the host node ran out of RAM and the Linux kernel Out-Of-Memory killer terminated the process.</li>
+            <li><strong>Exit Code 1 (Application Error):</strong> A fatal uncaught exception occurred in runtime (e.g. Node.js uncaughtException, Python SyntaxError, or Go panic).</li>
+            <li><strong>Exit Code 139 (SIGSEGV):</strong> A memory segmentation fault occurred in a compiled binary or shared C library.</li>
+            <li><strong>Exit Code 0:</strong> The process completed its task and cleanly exited (often happens when running a script that is not an ongoing server daemon).</li>
+          </ul>
+
+          <div class="callout callout--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="callout__body">
+              <div class="callout__title">OOMKilled Trap</div>
+              If you see exit code 137, your application might not be leaking memory &mdash; your <code>resources.limits.memory</code> might simply be configured lower than the JVM or Node.js heap startup requirement.
+            </div>
+          </div>
+
+          <h2 id="diagnostic-commands">3. 4 Essential kubectl Triage Commands</h2>
+          <p>
+            Run these four commands in sequence from your terminal to pinpoint the crash reason:
+          </p>
+
+          <h3>Step 1: Check Pod Status &amp; Recent Restarts</h3>
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">bash &bull; step 1</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>$ kubectl get pods -n production -l app=api-service
+NAME                           READY   STATUS             RESTARTS       AGE
+api-service-59695d7f6c-wz8pl   0/1     CrashLoopBackOff   5 (2m14s ago)  8m</code></pre>
+          </div>
+
+          <h3>Step 2: Inspect Exit Code &amp; Last State via Describe</h3>
+          <p>Look specifically at the <code>Last State</code> block and the <code>Events:</code> table at the bottom of the output:</p>
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">bash &bull; step 2</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>$ kubectl describe pod api-service-59695d7f6c-wz8pl -n production</code></pre>
+          </div>
+          <p>In the output, examine this crucial section:</p>
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">yaml &bull; describe output excerpt</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Mon, 23 Oct 2026 06:12:45 +0000
+      Finished:     Mon, 23 Oct 2026 06:13:02 +0000</code></pre>
+          </div>
+
+          <h3>Step 3: Retrieve the Previous Container Instance Crash Logs</h3>
+          <p>
+            If you run regular <code>kubectl logs</code>, you will often see an empty output because the container just restarted and hasn't written any stdout yet.
+            The <code>--previous</code> flag tells Kubernetes to retrieve logs from the <em>crashed container instance</em>:
+          </p>
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">bash &bull; step 3</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>$ kubectl logs api-service-59695d7f6c-wz8pl -n production --previous</code></pre>
+          </div>
+
+          <h3>Step 4: Debug Interactively with an Ephemeral Container or Sleep Override</h3>
+          <p>
+            If the container crashes before you can inspect it, temporarily override its entrypoint in staging to keep the container awake:
+          </p>
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">yaml &bull; deployment override</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>spec:
+  containers:
+  - name: api-service
+    image: registry.example.com/api:v2.4.1
+    command: ["/bin/sh", "-c", "sleep 3600"]</code></pre>
+          </div>
+
+          <h2 id="real-world-fix">4. Real-World Production Fix Example</h2>
+          <p>
+            In a recent client case, an automated payment gateway crashed every 45 seconds. Running <code>kubectl describe pod</code> revealed:
+          </p>
+          <ul>
+            <li><code>Exit Code: 137 (OOMKilled)</code></li>
+            <li><code>Memory Limit: 256Mi</code></li>
+            <li><code>Startup RSS: 310Mi</code> during initial cache warming.</li>
+          </ul>
+          <p>Here was the fixed resource block in the Kubernetes Deployment manifest:</p>
+
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">yaml &bull; deployment.yaml</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service
+  namespace: production
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: api-service
+        image: registry.example.com/api:v2.4.2
+        resources:
+          requests:
+            memory: "384Mi"
+            cpu: "250m"
+          limits:
+            memory: "768Mi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3</code></pre>
+          </div>
+
+          <div class="callout callout--tip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <div class="callout__body">
+              <div class="callout__title">Pro Tip: Liveness Probe Timing</div>
+              Always configure <code>initialDelaySeconds</code> appropriately. If your app takes 20 seconds to connect to Redis and PostgreSQL on boot, a probe that tests after 5 seconds will repeatedly trigger SIGKILL and force a CrashLoopBackOff!
+            </div>
+          </div>
+
+          <h2 id="prevention-checklist">5. Production Prevention Checklist</h2>
+          <ul>
+            <li><strong>Always define both requests and limits:</strong> Never omit memory limits, or a single runaway process can crash neighboring pods on the node.</li>
+            <li><strong>Add Graceful Shutdown Handlers:</strong> Trap <code>SIGTERM</code> signals so in-flight requests finish cleanly within <code>terminationGracePeriodSeconds: 30</code>.</li>
+            <li><strong>Log to stdout/stderr:</strong> Do not write logs exclusively to file paths inside the ephemeral container disk.</li>
+            <li><strong>Set up Alertmanager rules:</strong> Trigger Slack/email warnings whenever any pod restart count exceeds 3 in a 10-minute window.</li>
+          </ul>
+
+          <!-- In-Article Consulting CTA Card -->
+          <div class="article-cta" data-reveal>
+            <span class="article-cta__badge">Remote Kubernetes &bull; SRE Support</span>
+            <h3 class="article-cta__title">Need Senior Engineers to Triage Your Kubernetes Clusters?</h3>
+            <p class="article-cta__text">
+              ITXOps provides 100% remote infrastructure administration, cluster health audits, and 24/7 emergency incident response for scaling startups and businesses worldwide.
+            </p>
+            <div class="article-cta__actions">
+              <a class="btn btn--primary" href="contact.html?topic=Technical%20Troubleshooting">
+                Get Kubernetes Support
+                <svg class="btn__arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 10h11M11 6l4 4-4 4"></path>
+                </svg>
+              </a>
+              <button class="copy-email-widget js-copy-email" type="button" aria-label="Copy email address" data-email="info@itxops.com">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>info@itxops.com</span>
+                <span class="copy-email-widget__toast">Copied to clipboard!</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sticky Table of Contents Sidebar -->
+        <aside class="article-sidebar" aria-label="Table of contents">
+          <div class="article-toc">
+            <div class="article-toc__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              On This Page
+            </div>
+            <nav class="article-toc__list">
+              <a href="#what-it-means">1. What It Means</a>
+              <a href="#common-causes">2. Exit Codes &amp; Causes</a>
+              <a href="#diagnostic-commands">3. 4 Triage Commands</a>
+              <a href="#real-world-fix">4. Production Fix Example</a>
+              <a href="#prevention-checklist">5. Prevention Checklist</a>
+            </nav>
+          </div>
+
+          <div style="background:#ffffff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-xs);">
+            <div style="font-size:.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Target Audience</div>
+            <p style="font-size:.86rem;color:var(--ink-muted);line-height:1.5;">
+              DevOps Engineers, SysAdmins, and Backend Developers managing Kubernetes deployments.
+            </p>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </article>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <a class="footer__logo" href="index.html" aria-label="ITXOPS — home">
+        <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="165" height="58" loading="lazy">
+      </a>
+      <p class="footer__mission">
+        100% remote IT infrastructure, server management, and DevOps automation.
+        Delivering reliable systems for digital businesses worldwide with direct email engineering communication.
+      </p>
+      <div style="margin-top:16px;">
+        <span class="remote-badge">
+          <span class="remote-badge__dot" aria-hidden="true"></span>
+          Location: 100% Remote &bull; Global Operations
+        </span>
+      </div>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Services</h2>
+      <ul class="footer__links">
+        <li><a href="services.html#server">Linux Server Management</a></li>
+        <li><a href="services.html#deployment">Application Deployment</a></li>
+        <li><a href="services.html#devops">DevOps &amp; CI/CD Automation</a></li>
+        <li><a href="services.html#migration">Website &amp; Data Migration</a></li>
+        <li><a href="services.html#email">Business Email &amp; Workspace</a></li>
+        <li><a href="services.html#support">Troubleshooting &amp; Support</a></li>
+        <li><a href="services.html" style="color:#60a5fa;font-weight:600;">View All Services &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Technologies</h2>
+      <ul class="footer__links">
+        <li><a href="technologies.html#linux">Linux &amp; Cloud Servers</a></li>
+        <li><a href="technologies.html#webservers">Apache &amp; Nginx</a></li>
+        <li><a href="technologies.html#runtimes">Node.js &amp; PHP</a></li>
+        <li><a href="technologies.html#devops">Jenkins &amp; CI/CD</a></li>
+        <li><a href="technologies.html#workspaces">Google &amp; Microsoft 365</a></li>
+        <li><a href="technologies.html" style="color:#60a5fa;font-weight:600;">Full Tech Stack &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Resources &amp; Blog</h2>
+      <ul class="footer__links footer__links--spaced">
+        <li><a href="blog.html" style="color:#60a5fa;font-weight:600;">Engineering Blog</a></li>
+        <li><a href="kubernetes-crashloopbackoff-troubleshooting.html">Kubernetes CrashLoopBackOff Guide</a></li>
+        <li><a href="nginx-502-bad-gateway-troubleshooting.html">Fixing Nginx 502 Bad Gateway</a></li>
+        <li><a href="cut-aws-bill-30-percent-strategies.html">7 Ways to Cut AWS Bill by 30%</a></li>
+        <li><a href="about.html">About ITXOPS</a></li>
+        <li><a href="contact.html">Contact Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>&copy; <span id="year">2026</span> ITXOPS. All rights reserved. &bull; Location: Remote (Global Support)</p>
+    <p class="footer__note">Build &middot; Automate &middot; Operate</p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "How to Troubleshoot Kubernetes CrashLoopBackOff Step-by-Step",
+  "description": "Complete diagnostic guide to isolate exit codes, OOMKilled events, and container crashes in Kubernetes.",
+  "author": {
+    "@type": "Organization",
+    "name": "ITXOPS"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ITXOPS",
+    "logo": "https://itxops.com/assets/img/itxops-logo.png"
+  },
+  "datePublished": "2026-10-23",
+  "url": "https://itxops.com/kubernetes-crashloopbackoff-troubleshooting"
+}
+</script>
+
+<script src="assets/js/vendor/gsap.min.js" defer></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/main.js?v=2.3.0" defer></script>
+
+</body>
+</html>
