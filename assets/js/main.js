@@ -81,6 +81,11 @@
     nav.addEventListener('click', function (e) {
       if (e.target.closest('a')) closeNav();
     });
+    document.addEventListener('click', function (e) {
+      if (nav.classList.contains('is-open')) {
+        if (!nav.contains(e.target) && !toggle.contains(e.target)) closeNav();
+      }
+    });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeNav();
     });
