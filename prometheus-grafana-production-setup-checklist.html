@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prometheus + Grafana: Production Setup Checklist — ITXOPS</title>
+<meta name="description" content="Production-ready checklist and configuration guide for Prometheus, Grafana, and Node Exporter on Linux servers. Includes Alertmanager rules, dashboard templates, and TSDB tuning.">
+<meta name="keywords" content="Prometheus Grafana production setup, Node Exporter installation Ubuntu, prometheus.yml config, Alertmanager rules Linux, Grafana Node Exporter dashboard, Prometheus storage retention, Linux server monitoring checklist">
+<meta name="author" content="ITXOPS Engineering Desk">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="theme-color" content="#1C253B">
+<link rel="canonical" href="https://itxops.com/prometheus-grafana-production-setup-checklist">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<link rel="manifest" href="site.webmanifest">
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="ITXOPS">
+<meta property="og:title" content="Prometheus + Grafana: Production Setup Checklist — ITXOPS">
+<meta property="og:description" content="A complete checklist for deploying Prometheus, Alertmanager, and Grafana on Linux production servers.">
+<meta property="og:url" content="https://itxops.com/prometheus-grafana-production-setup-checklist">
+<meta property="og:image" content="https://itxops.com/assets/img/itxops-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Prometheus + Grafana Production Checklist — ITXOPS">
+<meta name="twitter:description" content="Deploy hardened server monitoring with Node Exporter, Prometheus, and Grafana in minutes.">
+<meta name="twitter:image" content="https://itxops.com/assets/img/itxops-social.png">
+
+<link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/styles.css?v=2.3.0">
+
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.remove('no-js');
+    if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      d.classList.add('js-anim');
+      setTimeout(function () {
+        if (!window.__itxAnim) d.classList.remove('js-anim');
+      }, 2500);
+    }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="remote-notice-strip">
+  <span class="remote-notice-strip__dot" aria-hidden="true"></span>
+  <span class="remote-notice-strip__text-desktop"><strong>100% Remote Operations:</strong> Production server observability &bull; Direct technical assistance via email: <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+  <span class="remote-notice-strip__text-mobile"><strong>100% Remote Ops:</strong> Direct inquiries via <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+</div>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="progress" aria-hidden="true"><span class="progress__bar" id="progress-bar"></span></div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a class="header__logo" href="index.html" aria-label="ITXOPS — home">
+      <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="155" height="55" fetchpriority="high" decoding="async">
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="services.html">Services</a></li>
+        <li><a class="nav__link" href="technologies.html">Technologies</a></li>
+        <li><a class="nav__link is-active" href="blog.html">Blog</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <span class="remote-badge" title="Operating 100% Remotely Worldwide">
+          <span class="remote-badge__dot" aria-hidden="true"></span>Location: Remote
+        </span>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">Get Started</a>
+      </div>
+    </nav>
+
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <article class="article-wrap">
+    <div class="container">
+
+      <!-- Article Header -->
+      <header class="article-header" data-reveal>
+        <div class="breadcrumb" style="margin-bottom:16px;">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb__sep">/</span>
+          <a href="blog.html">Blog</a>
+          <span class="breadcrumb__sep">/</span>
+          <span>Observability &amp; SRE</span>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:14px;">
+          <span class="blog-cat-badge blog-cat-badge--sre">Observability &amp; SRE</span>
+          <span class="blog-time-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            6 min read
+          </span>
+          <span class="blog-tag">#Prometheus</span>
+          <span class="blog-tag">#Grafana</span>
+          <span class="blog-tag">#LinuxMetrics</span>
+        </div>
+
+        <h1 style="font-size:clamp(1.85rem, 4vw, 2.7rem);color:var(--navy);line-height:1.2;margin-bottom:16px;">
+          Prometheus + Grafana: Production Setup Checklist &amp; Alert Rules
+        </h1>
+
+        <p style="font-size:1.1rem;color:var(--ink-muted);line-height:1.65;max-width:760px;">
+          Deploying Prometheus and Grafana takes five minutes; configuring them for real-world production reliability takes thoughtful engineering. Here is our battle-tested setup checklist with Node Exporter hardening and essential Alertmanager rules.
+        </p>
+
+        <div style="display:flex;align-items:center;gap:14px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line-soft);">
+          <div style="width:42px;height:42px;border-radius:50%;background:#1e293b;color:#60a5fa;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;">
+            ITX
+          </div>
+          <div>
+            <div style="font-weight:700;color:var(--navy);font-size:.95rem;">ITXOps Engineering Desk</div>
+            <div style="font-size:.82rem;color:var(--ink-muted);">100% Remote Infrastructure &bull; Operations Field Guide</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Layout: Content + Sticky TOC -->
+      <div class="article-layout">
+
+        <!-- Main Guide Body -->
+        <div class="article-content" data-reveal>
+
+          <p>
+            Prometheus has become the uncontested standard for open-source metrics collection in modern cloud architecture.
+            Combined with Grafana for rich dashboard visualization, it delivers granular, second-by-second visibility into your fleet of Linux servers,
+            Docker hosts, and database clusters.
+          </p>
+
+          <h2 id="installing-node-exporter">1. Installing &amp; Securing Node Exporter</h2>
+          <p>
+            Node Exporter is the lightweight daemon that runs on each Linux server to expose kernel, disk, memory, and network metrics on port <code>9100</code>.
+          </p>
+
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">bash &bull; install node_exporter</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code># 1. Download official release binary
+$ wget https://github.com/prometheus/node_exporter/releases/download/v1.8.1/node_exporter-1.8.1.linux-amd64.tar.gz
+$ tar xvf node_exporter-1.8.1.linux-amd64.tar.gz
+$ sudo mv node_exporter-1.8.1.linux-amd64/node_exporter /usr/local/bin/
+
+# 2. Create unprivileged system user
+$ sudo useradd -rs /bin/false node_exporter
+
+# 3. Create systemd service
+$ sudo tee /etc/systemd/system/node_exporter.service <<EOF
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter --collector.systemd
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable --now node_exporter</code></pre>
+          </div>
+
+          <div class="callout callout--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="callout__body">
+              <div class="callout__title">Firewall Protection Required!</div>
+              Never expose port <code>9100</code> to the public internet! It exposes raw host hardware information and active process counts. Allow traffic on port 9100 strictly from your Prometheus server IP: <code>sudo ufw allow from 10.0.0.5 to any port 9100 proto tcp</code>.
+            </div>
+          </div>
+
+          <h2 id="prometheus-config">2. Production prometheus.yml Configuration</h2>
+          <p>
+            Configure your scrape jobs with consistent evaluation intervals and instance labels:
+          </p>
+
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">yaml &bull; /etc/prometheus/prometheus.yml</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alert_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['localhost:9093']
+
+scrape_configs:
+  - job_name: 'linux-nodes'
+    static_configs:
+      - targets: ['10.0.0.10:9100', '10.0.0.11:9100']
+        labels:
+          environment: 'production'</code></pre>
+          </div>
+
+          <h2 id="alertmanager-rules">3. Essential Alert Rules Every Server Needs</h2>
+          <p>
+            Add these four golden alert definitions to <code>/etc/prometheus/alert_rules.yml</code>:
+          </p>
+
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">yaml &bull; alert_rules.yml</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>groups:
+- name: host_alerts
+  rules:
+  # 1. Instance Down (Host Unreachable)
+  - alert: InstanceDown
+    expr: up == 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Host {{ $labels.instance }} is unreachable"
+
+  # 2. Disk Running Out of Space (> 85% in 4 hours)
+  - alert: DiskFillingUp
+    expr: (node_filesystem_free_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 15
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Disk space on {{ $labels.instance }} is under 15%"
+
+  # 3. High CPU Load (> 90% for 15 minutes)
+  - alert: HostHighCpuLoad
+    expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+    for: 15m
+    labels:
+      severity: warning
+
+  # 4. Out of Memory Danger (< 5% Available)
+  - alert: HostOutOfMemory
+    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 5
+    for: 3m
+    labels:
+      severity: critical</code></pre>
+          </div>
+
+          <h2 id="grafana-dashboards">4. Top Grafana Dashboard Recommendations</h2>
+          <p>
+            Do not build dashboards from scratch. Import the community benchmark dashboard:
+          </p>
+          <ul>
+            <li><strong>Dashboard ID 1860 (Node Exporter Full):</strong> The gold standard dashboard featuring CPU usage by core, memory breakdown (buffers/cache/free), disk read/write throughput, and network interface packet drops.</li>
+          </ul>
+
+          <div class="callout callout--tip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <div class="callout__body">
+              <div class="callout__title">Pro Tip: TSDB Retention Tuning</div>
+              By default, Prometheus keeps data for 15 days. For production, set <code>--storage.tsdb.retention.time=90d</code> and <code>--storage.tsdb.retention.size=50GB</code> to prevent unexpected disk exhaustion on the monitoring server!
+            </div>
+          </div>
+
+          <!-- In-Article Consulting CTA Card -->
+          <div class="article-cta" data-reveal>
+            <span class="article-cta__badge">Remote Monitoring &bull; Production Observability</span>
+            <h3 class="article-cta__title">Need Prometheus &amp; Grafana Deployed Across Your Fleet?</h3>
+            <p class="article-cta__text">
+              ITXOps engineers set up centralized monitoring clusters with automated Alertmanager routing to Slack, PagerDuty, or email, custom application metrics, and security hardening.
+            </p>
+            <div class="article-cta__actions">
+              <a class="btn btn--primary" href="contact.html?topic=Server%20Management">
+                Setup Monitoring Stack
+                <svg class="btn__arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 10h11M11 6l4 4-4 4"></path>
+                </svg>
+              </a>
+              <button class="copy-email-widget js-copy-email" type="button" aria-label="Copy email address" data-email="info@itxops.com">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>info@itxops.com</span>
+                <span class="copy-email-widget__toast">Copied to clipboard!</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sticky Table of Contents Sidebar -->
+        <aside class="article-sidebar" aria-label="Table of contents">
+          <div class="article-toc">
+            <div class="article-toc__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              On This Page
+            </div>
+            <nav class="article-toc__list">
+              <a href="#installing-node-exporter">1. Node Exporter Setup</a>
+              <a href="#prometheus-config">2. prometheus.yml</a>
+              <a href="#alertmanager-rules">3. Critical Alert Rules</a>
+              <a href="#grafana-dashboards">4. Grafana Dashboards</a>
+            </nav>
+          </div>
+
+          <div style="background:#ffffff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-xs);">
+            <div style="font-size:.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Target Audience</div>
+            <p style="font-size:.86rem;color:var(--ink-muted);line-height:1.5;">
+              SysAdmins and DevOps teams deploying automated metrics and alerting on Linux servers.
+            </p>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </article>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <a class="footer__logo" href="index.html" aria-label="ITXOPS — home">
+        <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="165" height="58" loading="lazy">
+      </a>
+      <p class="footer__mission">
+        100% remote IT infrastructure, server management, and DevOps automation.
+        Delivering reliable systems for digital businesses worldwide with direct email engineering communication.
+      </p>
+      <div style="margin-top:16px;">
+        <span class="remote-badge">
+          <span class="remote-badge__dot" aria-hidden="true"></span>
+          Location: 100% Remote &bull; Global Operations
+        </span>
+      </div>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Services</h2>
+      <ul class="footer__links">
+        <li><a href="services.html#server">Linux Server Management</a></li>
+        <li><a href="services.html#deployment">Application Deployment</a></li>
+        <li><a href="services.html#devops">DevOps &amp; CI/CD Automation</a></li>
+        <li><a href="services.html#migration">Website &amp; Data Migration</a></li>
+        <li><a href="services.html#email">Business Email &amp; Workspace</a></li>
+        <li><a href="services.html#support">Troubleshooting &amp; Support</a></li>
+        <li><a href="services.html" style="color:#60a5fa;font-weight:600;">View All Services &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Technologies</h2>
+      <ul class="footer__links">
+        <li><a href="technologies.html#linux">Linux &amp; Cloud Servers</a></li>
+        <li><a href="technologies.html#webservers">Apache &amp; Nginx</a></li>
+        <li><a href="technologies.html#runtimes">Node.js &amp; PHP</a></li>
+        <li><a href="technologies.html#devops">Jenkins &amp; CI/CD</a></li>
+        <li><a href="technologies.html#workspaces">Google &amp; Microsoft 365</a></li>
+        <li><a href="technologies.html" style="color:#60a5fa;font-weight:600;">Full Tech Stack &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Resources &amp; Blog</h2>
+      <ul class="footer__links footer__links--spaced">
+        <li><a href="blog.html" style="color:#60a5fa;font-weight:600;">Engineering Blog</a></li>
+        <li><a href="kubernetes-crashloopbackoff-troubleshooting.html">Kubernetes CrashLoopBackOff Guide</a></li>
+        <li><a href="nginx-502-bad-gateway-troubleshooting.html">Fixing Nginx 502 Bad Gateway</a></li>
+        <li><a href="cut-aws-bill-30-percent-strategies.html">7 Ways to Cut AWS Bill by 30%</a></li>
+        <li><a href="about.html">About ITXOPS</a></li>
+        <li><a href="contact.html">Contact Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>&copy; <span id="year">2026</span> ITXOPS. All rights reserved. &bull; Location: Remote (Global Support)</p>
+    <p class="footer__note">Build &middot; Automate &middot; Operate</p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Prometheus + Grafana: Production Setup Checklist & Alert Rules",
+  "description": "Production-ready checklist and configuration guide for Prometheus, Grafana, and Node Exporter.",
+  "author": {
+    "@type": "Organization",
+    "name": "ITXOPS"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ITXOPS",
+    "logo": "https://itxops.com/assets/img/itxops-logo.png"
+  },
+  "datePublished": "2026-10-23",
+  "url": "https://itxops.com/prometheus-grafana-production-setup-checklist"
+}
+</script>
+
+<script src="assets/js/vendor/gsap.min.js" defer></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/main.js?v=2.3.0" defer></script>
+
+</body>
+</html>

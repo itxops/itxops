@@ -119,4 +119,88 @@
     </image:image>
   </url>
 
+  <!-- Blog Article 4: Terraform vs Ansible -->
+  <url>
+    <loc>https://itxops.com/terraform-vs-ansible-when-to-use-which</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>Terraform vs. Ansible: When Should You Use Which?</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 5: Zero-Downtime Deployments with GitHub Actions & Docker -->
+  <url>
+    <loc>https://itxops.com/zero-downtime-deployments-github-actions-docker</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>Zero-Downtime Deployments with GitHub Actions and Docker</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 6: Self-Hosted Runner on Ubuntu -->
+  <url>
+    <loc>https://itxops.com/self-hosted-runner-github-actions-guide</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>Building a Hardened Self-Hosted Runner on Ubuntu for GitHub Actions</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 7: SRE 4 Golden Signals -->
+  <url>
+    <loc>https://itxops.com/sre-survival-guide-four-golden-signals</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>The SRE Survival Guide: 4 Golden Signals Every System Should Monitor</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 8: Prometheus + Grafana Production Checklist -->
+  <url>
+    <loc>https://itxops.com/prometheus-grafana-production-setup-checklist</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>Prometheus + Grafana: Production Setup Checklist &amp; Alert Rules</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 9: Stop Hardcoding Secrets in CI/CD -->
+  <url>
+    <loc>https://itxops.com/stop-hardcoding-secrets-cicd-guide</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>Stop Hardcoding Secrets: Managing Environment Variables Securely in CI/CD</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Article 10: Vulnerability Scanning with Trivy in Docker -->
+  <url>
+    <loc>https://itxops.com/automating-vulnerability-scanning-trivy-docker</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://itxops.com/assets/img/itxops-social.png</image:loc>
+      <image:title>Automating Vulnerability Scanning with Trivy in Docker Builds</image:title>
+    </image:image>
+  </url>
+
 </urlset>

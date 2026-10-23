@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zero-Downtime Deployments with GitHub Actions and Docker — ITXOPS</title>
+<meta name="description" content="Step-by-step tutorial to achieve zero-downtime deployments using GitHub Actions, Docker, and Nginx. Includes full CI/CD YAML workflows, health-check verification, and automated rollback scripts.">
+<meta name="keywords" content="zero downtime deployment Docker, GitHub Actions Docker deploy, blue green deployment Docker, Nginx zero downtime reload, automated rollback script, CI/CD pipeline automation, Docker compose rolling update">
+<meta name="author" content="ITXOPS Engineering Desk">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="theme-color" content="#1C253B">
+<link rel="canonical" href="https://itxops.com/zero-downtime-deployments-github-actions-docker">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<link rel="manifest" href="site.webmanifest">
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="ITXOPS">
+<meta property="og:title" content="Zero-Downtime Deployments with GitHub Actions and Docker — ITXOPS">
+<meta property="og:description" content="Practical guide to eliminate deployment maintenance windows using Docker and GitHub Actions automation.">
+<meta property="og:url" content="https://itxops.com/zero-downtime-deployments-github-actions-docker">
+<meta property="og:image" content="https://itxops.com/assets/img/itxops-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zero-Downtime Deployments with GitHub Actions — ITXOPS">
+<meta name="twitter:description" content="Hands-on tutorial: deploy Docker containers continuously with zero dropped connections.">
+<meta name="twitter:image" content="https://itxops.com/assets/img/itxops-social.png">
+
+<link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/styles.css?v=2.3.0">
+
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.remove('no-js');
+    if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      d.classList.add('js-anim');
+      setTimeout(function () {
+        if (!window.__itxAnim) d.classList.remove('js-anim');
+      }, 2500);
+    }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="remote-notice-strip">
+  <span class="remote-notice-strip__dot" aria-hidden="true"></span>
+  <span class="remote-notice-strip__text-desktop"><strong>100% Remote Operations:</strong> Production CI/CD pipelines &bull; Direct technical assistance via email: <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+  <span class="remote-notice-strip__text-mobile"><strong>100% Remote Ops:</strong> Direct inquiries via <a href="mailto:info@itxops.com">info@itxops.com</a></span>
+</div>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="progress" aria-hidden="true"><span class="progress__bar" id="progress-bar"></span></div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a class="header__logo" href="index.html" aria-label="ITXOPS — home">
+      <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="155" height="55" fetchpriority="high" decoding="async">
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="services.html">Services</a></li>
+        <li><a class="nav__link" href="technologies.html">Technologies</a></li>
+        <li><a class="nav__link is-active" href="blog.html">Blog</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <span class="remote-badge" title="Operating 100% Remotely Worldwide">
+          <span class="remote-badge__dot" aria-hidden="true"></span>Location: Remote
+        </span>
+        <a class="btn btn--primary btn--sm nav__cta" href="contact.html">Get Started</a>
+      </div>
+    </nav>
+
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <article class="article-wrap">
+    <div class="container">
+
+      <!-- Article Header -->
+      <header class="article-header" data-reveal>
+        <div class="breadcrumb" style="margin-bottom:16px;">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb__sep">/</span>
+          <a href="blog.html">Blog</a>
+          <span class="breadcrumb__sep">/</span>
+          <span>CI/CD &amp; Automation</span>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:14px;">
+          <span class="blog-cat-badge blog-cat-badge--cicd">CI/CD &amp; Automation</span>
+          <span class="blog-time-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            7 min read
+          </span>
+          <span class="blog-tag">#GitHubActions</span>
+          <span class="blog-tag">#Docker</span>
+          <span class="blog-tag">#ZeroDowntime</span>
+        </div>
+
+        <h1 style="font-size:clamp(1.85rem, 4vw, 2.7rem);color:var(--navy);line-height:1.2;margin-bottom:16px;">
+          Zero-Downtime Deployments with GitHub Actions and Docker
+        </h1>
+
+        <p style="font-size:1.1rem;color:var(--ink-muted);line-height:1.65;max-width:760px;">
+          Scheduled maintenance windows and 15-second downtime gaps during git pushes are unacceptable for modern digital businesses. Here is how to achieve seamless, zero-downtime rolling cutovers with Docker and GitHub Actions.
+        </p>
+
+        <div style="display:flex;align-items:center;gap:14px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line-soft);">
+          <div style="width:42px;height:42px;border-radius:50%;background:#1e293b;color:#60a5fa;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;">
+            ITX
+          </div>
+          <div>
+            <div style="font-weight:700;color:var(--navy);font-size:.95rem;">ITXOps Engineering Desk</div>
+            <div style="font-size:.82rem;color:var(--ink-muted);">100% Remote Infrastructure &bull; Operations Field Guide</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Layout: Content + Sticky TOC -->
+      <div class="article-layout">
+
+        <!-- Main Guide Body -->
+        <div class="article-content" data-reveal>
+
+          <p>
+            Many development teams start with a simple deploy script:
+            <code>docker compose down && docker compose up -d</code>.
+          </p>
+          <p>
+            The moment you run <code>docker compose down</code>, existing database connections are severed, in-flight HTTP requests fail with 502 Bad Gateway, and visitors see broken web pages for the 10 to 45 seconds it takes for your new container to initialize, run database migrations, and bind to port 3000.
+          </p>
+          <p>
+            <strong>Zero-downtime deployment</strong> ensures that the old application container continues answering live web traffic until the new container has fully initialized, passed automated health checks, and is ready for Nginx to switch upstream traffic smoothly.
+          </p>
+
+          <h2 id="cutover-mechanics">1. The Architecture of Zero-Downtime Cutover</h2>
+          <p>
+            Rather than stopping the container, we implement an active <strong>Blue-Green port toggle pattern</strong> on the server:
+          </p>
+          <ol>
+            <li>Suppose <strong>Container Blue</strong> is live on <code>localhost:3001</code> behind Nginx.</li>
+            <li>GitHub Actions builds the new image, transfers it, and starts <strong>Container Green</strong> on <code>localhost:3002</code>.</li>
+            <li>A verification script polls <code>http://localhost:3002/healthz</code> until it returns HTTP 200 OK.</li>
+            <li>Nginx points upstream traffic to <code>localhost:3002</code> and executes <code>nginx -s reload</code> (which swaps traffic without terminating existing TCP sockets).</li>
+            <li>Only after the cutover succeeds is the old Container Blue stopped.</li>
+            <li>If Container Green fails its healthcheck within 60 seconds, it is automatically terminated and Container Blue remains untouched with <strong>zero impact to visitors</strong>.</li>
+          </ol>
+
+          <div class="callout callout--info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div class="callout__body">
+              <div class="callout__title">Why Nginx Reload Drops Zero Connections</div>
+              The command <code>nginx -s reload</code> instructs Nginx worker processes to finish serving current requests and exit gracefully while new workers immediately spawn to accept new traffic. No TCP connections are dropped.
+            </div>
+          </div>
+
+          <h2 id="github-workflow">2. Production GitHub Actions Workflow</h2>
+          <p>Here is the complete <code>.github/workflows/deploy.yml</code> workflow configured with SSH key authentication and automated status reporting:</p>
+
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">yaml &bull; .github/workflows/deploy.yml</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>name: Production Deployment
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to Remote Linux Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/app
+            ./scripts/deploy-cutover.sh ghcr.io/${{ github.repository }}:${{ github.sha }}</code></pre>
+          </div>
+
+          <h2 id="cutover-script">3. The Zero-Downtime Cutover Script</h2>
+          <p>Save this script on your Linux server at <code>/opt/app/scripts/deploy-cutover.sh</code>:</p>
+
+          <div class="code-box">
+            <div class="code-box__head">
+              <span class="code-box__lang">bash &bull; /opt/app/scripts/deploy-cutover.sh</span>
+              <button class="code-box__copy js-code-copy" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code>#!/bin/bash
+set -e
+
+NEW_IMAGE="$1"
+CURRENT_PORT=$(cat /opt/app/.live_port 2>/dev/null || echo "3001")
+
+if [ "$CURRENT_PORT" == "3001" ]; then
+    NEW_PORT="3002"
+    OLD_CONTAINER="app-blue"
+    NEW_CONTAINER="app-green"
+else
+    NEW_PORT="3001"
+    OLD_CONTAINER="app-green"
+    NEW_CONTAINER="app-blue"
+fi
+
+echo "Pulling $NEW_IMAGE..."
+docker pull "$NEW_IMAGE"
+
+echo "Starting $NEW_CONTAINER on port $NEW_PORT..."
+docker run -d \
+    --name "$NEW_CONTAINER" \
+    --restart unless-stopped \
+    --env-file /opt/app/.env \
+    -p "127.0.0.1:$NEW_PORT:3000" \
+    "$NEW_IMAGE"
+
+echo "Verifying healthcheck at http://127.0.0.1:$NEW_PORT/healthz..."
+HEALTH_PASSED=false
+for i in {1..30}; do
+    if curl --fail --silent "http://127.0.0.1:$NEW_PORT/healthz" > /dev/null; then
+        HEALTH_PASSED=true
+        break
+    fi
+    echo "Waiting for container boot... ($i/30)"
+    sleep 2
+done
+
+if [ "$HEALTH_PASSED" = false ]; then
+    echo "ERROR: Health check failed on new container! Rolling back..."
+    docker stop "$NEW_CONTAINER" || true
+    docker rm "$NEW_CONTAINER" || true
+    exit 1
+fi
+
+echo "Healthcheck passed! Switching Nginx traffic to port $NEW_PORT..."
+sed -i "s/127.0.0.1:[0-9]*/127.0.0.1:$NEW_PORT/g" /etc/nginx/conf.d/upstream.conf
+sudo nginx -s reload
+
+echo "$NEW_PORT" > /opt/app/.live_port
+
+echo "Stopping old container $OLD_CONTAINER gracefully..."
+sleep 5
+docker stop "$OLD_CONTAINER" || true
+docker rm "$OLD_CONTAINER" || true
+
+echo "SUCCESS: Zero-downtime deployment finished on port $NEW_PORT!"</code></pre>
+          </div>
+
+          <div class="callout callout--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="callout__body">
+              <div class="callout__title">Database Migration Strategy</div>
+              If your release includes database schema migrations, ensure all migrations are <strong>backward-compatible</strong> (e.g. adding columns instead of renaming columns). Since both old and new containers run simultaneously for a few seconds, the old container must not crash on the updated schema!
+            </div>
+          </div>
+
+          <h2 id="automated-rollback">4. Automated Rollback &amp; Verification</h2>
+          <p>
+            Notice that if <code>curl http://127.0.0.1:$NEW_PORT/healthz</code> does not return HTTP 200 within 60 seconds (due to an uncaught crash, wrong environment variable, or database failure), the script exits with code 1.
+            Because <code>Nginx</code> was never reloaded, your existing production traffic continues flowing uninterrupted through the previous container instance.
+          </p>
+
+          <!-- In-Article Consulting CTA Card -->
+          <div class="article-cta" data-reveal>
+            <span class="article-cta__badge">Remote CI/CD &bull; Deployment Automation</span>
+            <h3 class="article-cta__title">Ready to Eliminate Deployment Downtime in Your Workflows?</h3>
+            <p class="article-cta__text">
+              ITXOps engineers architect bulletproof CI/CD pipelines with zero-downtime cutovers, automated staging environments, and rollback safety nets across AWS, DigitalOcean, and dedicated servers.
+            </p>
+            <div class="article-cta__actions">
+              <a class="btn btn--primary" href="contact.html?topic=DevOps%20/%20Automation">
+                Plan Zero-Downtime Pipeline
+                <svg class="btn__arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 10h11M11 6l4 4-4 4"></path>
+                </svg>
+              </a>
+              <button class="copy-email-widget js-copy-email" type="button" aria-label="Copy email address" data-email="info@itxops.com">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>info@itxops.com</span>
+                <span class="copy-email-widget__toast">Copied to clipboard!</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sticky Table of Contents Sidebar -->
+        <aside class="article-sidebar" aria-label="Table of contents">
+          <div class="article-toc">
+            <div class="article-toc__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              On This Page
+            </div>
+            <nav class="article-toc__list">
+              <a href="#cutover-mechanics">1. Cutover Mechanics</a>
+              <a href="#github-workflow">2. GitHub Actions YAML</a>
+              <a href="#cutover-script">3. Cutover Script</a>
+              <a href="#automated-rollback">4. Automated Rollback</a>
+            </nav>
+          </div>
+
+          <div style="background:#ffffff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-xs);">
+            <div style="font-size:.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Target Audience</div>
+            <p style="font-size:.86rem;color:var(--ink-muted);line-height:1.5;">
+              DevOps Practitioners, Backend Developers, and Tech Leads eliminating deployment downtime.
+            </p>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </article>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <a class="footer__logo" href="index.html" aria-label="ITXOPS — home">
+        <img src="assets/img/itxops-wordmark.png" alt="ITXOPS" width="165" height="58" loading="lazy">
+      </a>
+      <p class="footer__mission">
+        100% remote IT infrastructure, server management, and DevOps automation.
+        Delivering reliable systems for digital businesses worldwide with direct email engineering communication.
+      </p>
+      <div style="margin-top:16px;">
+        <span class="remote-badge">
+          <span class="remote-badge__dot" aria-hidden="true"></span>
+          Location: 100% Remote &bull; Global Operations
+        </span>
+      </div>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Services</h2>
+      <ul class="footer__links">
+        <li><a href="services.html#server">Linux Server Management</a></li>
+        <li><a href="services.html#deployment">Application Deployment</a></li>
+        <li><a href="services.html#devops">DevOps &amp; CI/CD Automation</a></li>
+        <li><a href="services.html#migration">Website &amp; Data Migration</a></li>
+        <li><a href="services.html#email">Business Email &amp; Workspace</a></li>
+        <li><a href="services.html#support">Troubleshooting &amp; Support</a></li>
+        <li><a href="services.html" style="color:#60a5fa;font-weight:600;">View All Services &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Technologies</h2>
+      <ul class="footer__links">
+        <li><a href="technologies.html#linux">Linux &amp; Cloud Servers</a></li>
+        <li><a href="technologies.html#webservers">Apache &amp; Nginx</a></li>
+        <li><a href="technologies.html#runtimes">Node.js &amp; PHP</a></li>
+        <li><a href="technologies.html#devops">Jenkins &amp; CI/CD</a></li>
+        <li><a href="technologies.html#workspaces">Google &amp; Microsoft 365</a></li>
+        <li><a href="technologies.html" style="color:#60a5fa;font-weight:600;">Full Tech Stack &rarr;</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Resources &amp; Blog</h2>
+      <ul class="footer__links footer__links--spaced">
+        <li><a href="blog.html" style="color:#60a5fa;font-weight:600;">Engineering Blog</a></li>
+        <li><a href="kubernetes-crashloopbackoff-troubleshooting.html">Kubernetes CrashLoopBackOff Guide</a></li>
+        <li><a href="nginx-502-bad-gateway-troubleshooting.html">Fixing Nginx 502 Bad Gateway</a></li>
+        <li><a href="cut-aws-bill-30-percent-strategies.html">7 Ways to Cut AWS Bill by 30%</a></li>
+        <li><a href="about.html">About ITXOPS</a></li>
+        <li><a href="contact.html">Contact Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>&copy; <span id="year">2026</span> ITXOPS. All rights reserved. &bull; Location: Remote (Global Support)</p>
+    <p class="footer__note">Build &middot; Automate &middot; Operate</p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Zero-Downtime Deployments with GitHub Actions and Docker",
+  "description": "Achieve seamless continuous deployments without downtime using Docker and GitHub Actions.",
+  "author": {
+    "@type": "Organization",
+    "name": "ITXOPS"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ITXOPS",
+    "logo": "https://itxops.com/assets/img/itxops-logo.png"
+  },
+  "datePublished": "2026-10-23",
+  "url": "https://itxops.com/zero-downtime-deployments-github-actions-docker"
+}
+</script>
+
+<script src="assets/js/vendor/gsap.min.js" defer></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/main.js?v=2.3.0" defer></script>
+
+</body>
+</html>
